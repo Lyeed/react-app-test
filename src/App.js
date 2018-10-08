@@ -1,36 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import './App.css';
 
 class App extends React.Component {
-	constructor( props ) {
-		super( props );
-		this.state = {
-			data: props.processes,
-			focused: { desc: "Aucune", cpuUsage: "X" },
-		};
-	}
 
-	handleClick( sel ) {
-		console.log( "Clicked: ", sel );
-		this.setState( { focused: sel } );
+	selectProcess = ( sel ) => {
+		console.log( "Selected: ", sel );
+		this.props.dispatch({ type: 'SELECT_PROCESS', elem: sel });
 	}
 
 	render() {
+		let paragraph;
+		if (this.props.focused) {
+			paragraph = <p>
+				<span>ID&nbsp;: <span>{this.props.focused.id}</span></span>
+				<span>Description&nbsp;: <span>{this.props.focused.desc}</span></span>
+				<br/>
+				<span>CPU usage&nbsp;: <span>{this.props.focused.cpuUsage}</span>%</span>
+			</p>;
+		} else {
+			paragraph = <span></span>
+		}
+
 		return (
 			<div id="app">
-				<h1>{ this.state.data.length } running processes</h1>
+				<h1>{ this.props.data.length } running processes</h1>
 				<ul>
-					{ this.state.data.map( ([key, val]) =>
-						<li href="#" key={ key.toString() } onClick={this.handleClick.bind( this, val )}>{ val.title }</li>
+					{ this.props.data.map( obj =>
+						<li href="#" key={ obj.id.toString() } onClick={ this.selectProcess.bind( this, obj ) }>{ obj.title }</li>
 					)}
 				</ul>
-				<p>
-					<span>Description&nbsp;: <span>{ this.state.focused.desc }</span></span>
-					<span>CPU usage: <span>{ this.state.focused.cpuUsage }</span>%</span>
-				</p>
+				{ paragraph }
 			</div>
 		);
 	}
 }
 
-export default App;
+function mapStateToProps(state) {
+	return {
+		data: state.data,
+		focused: state.focused
+	};
+}
+
+export default connect(mapStateToProps)(App);
