@@ -6,20 +6,28 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-class App extends React.Component {
-  static get propTypes() {
-    return {
-      data: PropTypes.arrayOf(PropTypes.object).isRequired,
-      dispatch: PropTypes.func.isRequired,
-      focused: PropTypes.shape({
-        id: PropTypes.string,
-        title: PropTypes.string,
-        desc: PropTypes.string,
-        cpuUsage: PropTypes.number,
-      }).isRequired,
-    };
-  }
+const propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  focused: PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string,
+    desc: PropTypes.string,
+    cpuUsage: PropTypes.number,
+  }),
+  dispatch: PropTypes.func,
+};
 
+const defaultProps = {
+  focused: null,
+  dispatch: undefined,
+};
+
+const mapStateToProps = state => ({
+  data: state.data,
+  focused: state.focused,
+});
+
+class App extends React.Component {
   selectProcess(sel) {
     const { dispatch } = this.props;
     dispatch({ type: 'SELECT_PROCESS', elem: sel });
@@ -64,11 +72,8 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    data: state.data,
-    focused: state.focused,
-  };
-}
+App.propTypes = propTypes;
+App.defaultProps = defaultProps;
 
-export default connect(mapStateToProps)(App);
+const AppConn = connect(mapStateToProps)(App);
+export default AppConn;

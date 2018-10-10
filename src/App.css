@@ -3,6 +3,12 @@
 	flex-direction: column;
 }
 
+ul {
+  list-style: none;
+  padding: 11px 11px;
+  margin: 0;
+}
+
 li {
 	cursor: pointer;
 	padding-bottom: 5px;
